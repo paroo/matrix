@@ -1,4 +1,5 @@
-class TestMetrix
+class Matrix
+  attr_accessor :matrix, :default_value
 
   def initialize(rows, columns) 
     @rows = rows	  
@@ -9,7 +10,17 @@ class TestMetrix
     reset    
   end
 
+  # re-set all the cell in a matrix with a given value
+  # if value is not passed to the method use @default_value
   def reset(default_value = nil) 
+    default_value ||= @default_value
+    @matrix.clear
+    index = 0
+
+    while index <= @dimension - 1
+      @matrix << default_value
+      index += 1
+    end 
   end 
 
   def set_color_to_pixel(row, column, colour)
