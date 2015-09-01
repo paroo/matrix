@@ -12,13 +12,14 @@ class Matrix
 
   # re-set all the cell in a matrix with a given value
   # if value is not passed to the method use @default_value
-  def reset(default_value = nil) 
-    default_value ||= @default_value
+  def reset(value = nil) 
+    value ||= @default_value
+    raise "The value is nil or is not a string" if value.nil? || !value.is_a?(String)
     @matrix.clear
     index = 0
 
     while index <= @dimension - 1
-      @matrix << default_value
+      @matrix << value
       index += 1
     end 
   end 

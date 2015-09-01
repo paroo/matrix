@@ -14,9 +14,13 @@ class MatrixTest < Minitest::Test
     assert_equal(100, @matrix_array.count, 
 		 "The numeber of element in the matrix is incorrect")
     assert(@matrix_array.all?{|value| value == @default_value},
-	   "The newly instatiated matrix does not caoint the default value" +
+	   "The newly instatiated matrix does not contain the default value" +
 	   "#{@default_value}")
     @matrix.reset(RESET_VALUE)
-    assert(@matrix_array.all?{|value| value == RESET_VALUE})
+    assert(@matrix_array.all?{|value| value == RESET_VALUE},
+	   "The reset method did not reset all the elements")
+    assert_raises do  
+      @matrix.reset(1)
+    end
   end
 end
