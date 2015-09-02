@@ -58,7 +58,9 @@ class Matrix
       end
     end 	  
   end 
- 
+
+  # drow a orizzantal line from a pixel to another pixel
+  # with a give colour 
   def draw_orizzontal_line(start_column, end_column, row, colour)
     first_column = start_column > end_column ? end_column : start_column
     last_column  = start_column > end_column ? start_column : end_column
