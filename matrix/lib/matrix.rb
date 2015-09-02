@@ -10,13 +10,11 @@ class Matrix
     reset    
   end
 
-  # re-set all the cell in a matrix with a given value
+  # re-set all the pixels in the matrix with a given value
   # if value is not passed to the method use @default_value
   def reset(value = nil) 
     value ||= @default_value
-    if value.nil? || !value.is_a?(String)
-      raise "The value is nil or is not a string"
-    end  
+    raise_wrong_pixel_value(value)
     @matrix.clear
     index = 0
 
@@ -26,13 +24,37 @@ class Matrix
     end 
   end 
 
-  # set the a value in a specific cell
+  # set value in a specific pixel
   def set_color_to_pixel(row, column, colour)
+    raise_wrong_row(row)
+    raise_wrong_column(column)    
     pixel = ((row - 1) * @columns) + (column - 1)
     @matrix[pixel] = colour
   end 
   
+  # drow a vertical line from a pixel to another pixel
+  # with a give colour 
   def draw_vertical_line(column, start_row, end_row, colour)
+    first_row = start_row > end_row ? end_row   : start_row
+    last_row  = start_row > end_row ? start_row : end_row
+    raise_wrong_row(first_row, last_row)
+    raise_wrong_column(column)    
+       
+    if start_row == end_row
+      set_color_to_pixel(start_row, column, colour)
+    else 
+      index = 0
+      start_pixel = pixel(first_row, column)
+      end_pixel = pixel(last_row, column)
+
+      for i in 0 .. @matrix.length - 1 
+        index += 1
+	if start_pixel == index && i < end_pixel
+          @matrix[index - 1] = colour
+	  start_pixel += @columns
+	end	
+      end
+    end 	  
   end 
  
   def draw_orizzontal_line(start_column, end_column, row, colour)
@@ -43,7 +65,29 @@ class Matrix
 
   def init
   end
-	  
+
+  private def pixel(row, column)
+    ((row - 1) * @columns) + column
+  end
+
+  private def raise_wrong_row(*rows) 
+    if rows.any?{|value| value > @rows}
+      raise "The row selected is greater than #{@rows}"
+    end  
+  end
+
+  private def raise_wrong_column(*columns) 
+    if columns.any?{|value| value > @columns}
+      raise "The column selected is greater than #{@columns}"
+    end  
+  end
+  
+  private def raise_wrong_pixel_value(value)
+    if value.nil? || !value.is_a?(String)
+      raise "The value is nil or is not a string"
+    end
+  end
+
   def to_s(*matrix)
   end
 end
