@@ -28,6 +28,7 @@ class Matrix
   def set_color_to_pixel(row, column, colour)
     raise_wrong_row(row)
     raise_wrong_column(column)    
+    raise_wrong_pixel_value(colour)
     pixel = ((row - 1) * @columns) + (column - 1)
     @matrix[pixel] = colour
   end 
@@ -39,6 +40,7 @@ class Matrix
     last_row  = start_row > end_row ? start_row : end_row
     raise_wrong_row(first_row, last_row)
     raise_wrong_column(column)    
+    raise_wrong_pixel_value(colour)
        
     if start_row == end_row
       set_color_to_pixel(start_row, column, colour)
@@ -58,6 +60,24 @@ class Matrix
   end 
  
   def draw_orizzontal_line(start_column, end_column, row, colour)
+    first_column = start_column > end_column ? end_column : start_column
+    last_column  = start_column > end_column ? start_column : end_column
+    raise_wrong_row(row)
+    raise_wrong_column(start_column, end_column)    
+    raise_wrong_pixel_value(colour)
+
+    if start_column == end_column 
+      set_color_to_pixel(start_column, row, colour)
+    else 
+      start_pixel = pixel(row, first_column)
+      end_pixel = pixel(row, last_column)
+
+      for i in 0 .. @matrix.length - 1 
+	if i >= start_pixel && i <= end_pixel
+          @matrix[i - 1] = colour  
+	end
+      end
+    end
   end
 
   def paint_area

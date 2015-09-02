@@ -8,6 +8,9 @@ class MatrixTest < Minitest::Test
   VERTICAL_LINE_START = 2
   VERTICAL_LINE_END = 5
   VERTICAL_LINE_COLUMN = 2
+  ORIZZANTAL_LINE_START = 4
+  ORIZZANTAL_LINE_END = 9
+  ORIZZANTAL_LINE_ROW = 8
 
   def setup
     @matrix = Matrix.new(10, 10)
@@ -27,10 +30,13 @@ class MatrixTest < Minitest::Test
     assert_raises do  
       @matrix.reset(1)
     end
+
+    # test set_color_to_pixel() method
     @matrix.set_color_to_pixel(ROW, COLUMN, "X")
     assert_equal("X", @matrix_array[(COLUMN - 1) + ((ROW - 1) * @matrix.columns)], 
 		 "The value set in row #{ROW} and column #{COLUMN} is not correct")
 
+    # test draw_vertical_line() method
     @matrix.draw_vertical_line(VERTICAL_LINE_COLUMN, VERTICAL_LINE_START, VERTICAL_LINE_END, "Z")
     vertical_line_indexes = [] 
     @matrix_array.each_with_index do |value, index|
@@ -47,5 +53,44 @@ class MatrixTest < Minitest::Test
     actual_vertical_line_indexes =  (VERTICAL_LINE_START..VERTICAL_LINE_END).to_a.map{|x| ((x - 1) * @matrix.columns) + (VERTICAL_LINE_COLUMN - 1) }
     assert_equal(vertical_line_indexes, actual_vertical_line_indexes)  
 
+    assert_raises do  
+      @matrix.draw_vertical_line(11, 5, 10, "Z")
+    end
+    assert_raises do  
+      @matrix.draw_vertical_line(10, 5, 11, "Z")
+    end
+    assert_raises do  
+      @matrix.draw_vertical_line(10, 11, 10, "Z")
+    end
+    assert_raises do  
+      @matrix.draw_vertical_line(5, 5, 10, 0)
+    end
+
+    # test draw_orizzontal_line() method
+    @matrix.draw_orizzontal_line(ORIZZANTAL_LINE_START, ORIZZANTAL_LINE_END, ORIZZANTAL_LINE_ROW, "W")
+    orizzantal_line_indexes = [] 
+    @matrix_array.each_with_index do |value, index|
+      orizzantal_line_indexes << index if value == "W"  
+    end
+    actual_orizzantal_line_indexes =  (ORIZZANTAL_LINE_START..ORIZZANTAL_LINE_END).to_a.map{|x| (x - 1) + ((ORIZZANTAL_LINE_ROW - 1) * @matrix.columns) }
+    assert_equal(orizzantal_line_indexes, actual_orizzantal_line_indexes)  
+
+    @matrix.draw_orizzontal_line(ORIZZANTAL_LINE_END, ORIZZANTAL_LINE_START, ORIZZANTAL_LINE_ROW, "W")
+    orizzantal_line_indexes = [] 
+    @matrix_array.each_with_index do |value, index|
+      orizzantal_line_indexes << index if value == "W"  
+    end
+    actual_orizzantal_line_indexes =  (ORIZZANTAL_LINE_START..ORIZZANTAL_LINE_END).to_a.map{|x| (x - 1) + ((ORIZZANTAL_LINE_ROW - 1) * @matrix.columns) }
+    assert_equal(orizzantal_line_indexes, actual_orizzantal_line_indexes)  
+
+    assert_raises do  
+      @matrix.draw_orizzontal_line(11, 5, "Z")
+    end
+    assert_raises do  
+      @matrix.draw_orizzontal_line(5, 11, "Z")
+    end
+    assert_raises do  
+      @matrix.draw_orizzontal_line(5, 5, 0)
+    end
   end
 end
