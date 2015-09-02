@@ -3,7 +3,8 @@ require_relative '../lib/matrix'
 
 class MatrixTest < Minitest::Test
   RESET_VALUE = "H"
-
+  COLUMN = 4
+  ROW = 3
   def setup
     @matrix = Matrix.new(10, 10)
     @matrix_array = @matrix.matrix
@@ -22,5 +23,7 @@ class MatrixTest < Minitest::Test
     assert_raises do  
       @matrix.reset(1)
     end
+    @matrix.set_color_to_pixel(ROW, COLUMN, "X")
+    assert_equal("X", @matrix_array[(COLUMN - 1) + ((ROW - 1) * @matrix.columns)], "The value set is not correct")
   end
 end

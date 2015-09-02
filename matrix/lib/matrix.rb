@@ -1,5 +1,5 @@
 class Matrix
-  attr_accessor :matrix, :default_value
+  attr_accessor :matrix, :default_value, :rows, :columns
 
   def initialize(rows, columns) 
     @rows = rows	  
@@ -14,7 +14,9 @@ class Matrix
   # if value is not passed to the method use @default_value
   def reset(value = nil) 
     value ||= @default_value
-    raise "The value is nil or is not a string" if value.nil? || !value.is_a?(String)
+    if value.nil? || !value.is_a?(String)
+      raise "The value is nil or is not a string"
+    end  
     @matrix.clear
     index = 0
 
@@ -24,7 +26,10 @@ class Matrix
     end 
   end 
 
+  # set the a value in a specific cell
   def set_color_to_pixel(row, column, colour)
+    pixel = ((row - 1) * @columns) + (column - 1)
+    @matrix[pixel] = colour
   end 
   
   def draw_vertical_line(column, start_row, end_row, colour)
