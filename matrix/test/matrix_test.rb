@@ -75,22 +75,53 @@ class MatrixTest < Minitest::Test
     actual_orizzantal_line_indexes =  (ORIZZANTAL_LINE_START..ORIZZANTAL_LINE_END).to_a.map{|x| (x - 1) + ((ORIZZANTAL_LINE_ROW - 1) * @matrix.columns) }
     assert_equal(orizzantal_line_indexes, actual_orizzantal_line_indexes)  
 
-    @matrix.draw_orizzontal_line(ORIZZANTAL_LINE_END, ORIZZANTAL_LINE_START, ORIZZANTAL_LINE_ROW, "W")
+    @matrix.draw_orizzontal_line(ORIZZANTAL_LINE_END, ORIZZANTAL_LINE_START, ORIZZANTAL_LINE_ROW, "K")
     orizzantal_line_indexes = [] 
     @matrix_array.each_with_index do |value, index|
-      orizzantal_line_indexes << index if value == "W"  
+      orizzantal_line_indexes << index if value == "K"  
     end
     actual_orizzantal_line_indexes =  (ORIZZANTAL_LINE_START..ORIZZANTAL_LINE_END).to_a.map{|x| (x - 1) + ((ORIZZANTAL_LINE_ROW - 1) * @matrix.columns) }
     assert_equal(orizzantal_line_indexes, actual_orizzantal_line_indexes)  
 
     assert_raises do  
-      @matrix.draw_orizzontal_line(11, 5, "Z")
+      @matrix.draw_orizzontal_line(11, 5, 2, "Z")
+    end
+    assert_raises do  
+      @matrix.draw_orizzontal_line(5, 11, 2, "Z")
+    end
+    assert_raises do  
+      @matrix.draw_orizzontal_line(5, 8, 11, 0)
+    end
+    assert_raises do  
+      @matrix.draw_orizzontal_line(5, 8, 10, 0)
+    end
+
+
+    @matrix.reset
+    @matrix.draw_vertical_line(VERTICAL_LINE_COLUMN, VERTICAL_LINE_START, 
+			       VERTICAL_LINE_END, "Z")
+
+    vertical_line_indexes = [] 
+    @matrix_array.each_with_index do |value, index|
+      vertical_line_indexes << index if value == "Z"  
+    end
+ 
+    @matrix.paint_area(3, 2, "P")   
+
+    painted_area_indexes = [] 
+    @matrix_array.each_with_index do |value, index|
+      painted_area_indexes << index if value == "P"  
+    end
+    assert_equal(vertical_line_indexes, painted_area_indexes)  
+
+    assert_raises do  
+      @matrix.paint_area(11, 5,"Z")
     end
     assert_raises do  
       @matrix.draw_orizzontal_line(5, 11, "Z")
     end
     assert_raises do  
-      @matrix.draw_orizzontal_line(5, 5, 0)
+      @matrix.draw_orizzontal_line(5, 8, 0)
     end
   end
 end

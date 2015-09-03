@@ -7,7 +7,12 @@ class Matrix
     @matrix = []
     @dimension = rows * columns
     @default_value = "O"
-    reset    
+    @row_start = *(0..((@rows - 1) * @columns)).step(@columns).to_a
+    @row_end =  *((@columns - 1)..((@rows) * @columns)).step(@columns).to_a
+    @first_row = *(0..(@columns - 1)).to_a
+    @last_row = (((@rows - 1) * @columns)...@dimension).to_a
+    @cell_value = nil
+    reset
   end
 
   # re-set all the pixels in the matrix with a given value
@@ -82,10 +87,85 @@ class Matrix
     end
   end
 
-  def paint_area
-  end 	  
+  def paint_area(row, column, colour)
+    raise_wrong_row(row)
+    raise_wrong_column(column)    
+    raise_wrong_pixel_value(colour)
+
+    @visited = []
+    pixel = pixel(row, column - 1)
+    setSimilarValue(pixel, colour)
+  end
+
+  # recursively set the colour of the next pixel
+  # if the colour is the same, if not continue searching
+  def setSimilarValue(cell, colour)
+    @cell_value = @matrix[cell] if @cell_value.nil?
+    value = @matrix[cell]
+
+    if !cell.nil? && !@visited.include?(cell) && value == @cell_value && cell >= 0 and cell < @dimension
+      @visited << cell
+      @matrix[cell] = colour 
+      # TODO: refactor the following if statements
+      if @row_start.include?(cell)
+        if cell == 0
+          setSimilarValue(cell + 1, colour)               
+	  setSimilarValue(cell + @columns, colour)
+          setSimilarValue(cell + @columns + 1, colour)  
+	elsif cell == 15	
+          setSimilarValue(cell + 1, colour)               
+	  setSimilarValue(cell - @columns, colour)
+          setSimilarValue(cell - @columns + 1, colour)  
+	else
+	  setSimilarValue(cell + 1, colour)               
+	  setSimilarValue(cell - @columns, colour)      
+          setSimilarValue(cell + @columns, colour)       
+          setSimilarValue(cell + @columns + 1, colour) 
+          setSimilarValue(cell - @columns + 1, colour)  
+        end			     
+      elsif @row_end.include?(cell)
+        if cell == 4
+          setSimilarValue(cell - 1, colour)               
+	  setSimilarValue(cell + @columns, colour)
+          setSimilarValue(cell + @columns + 1, colour)  
+	elsif cell == 15	
+          setSimilarValue(cell - 1, colour)               
+	  setSimilarValue(cell - @columns, colour)
+          selectSimilarValue(cell - @columns + 1, colour) 
+	else
+	  setSimilarValue(cell + 1, colour)               
+	  setSimilarValue(cell - @columns, colour)      
+          setSimilarValue(cell + @columns, colour)       
+          setSimilarValue(cell + @columns + 1, colour)
+	  setSimilarValue(cell - @columns + 1, colour)  
+        end
+      elsif @first_row.include?(cell) 
+        setSimilarValue(cell + 1, colour)               
+	setSimilarValue(cell + @columns, colour)
+        setSimilarValue(cell + @columns + 1, colour) 
+        setSimilarValue(cell - 1, colour)               
+	setSimilarValue(cell + @columns + 1, colour)     
+      elsif @last_row.include?(cell) 
+        setSimilarValue(cell + 1, colour)               
+	setSimilarValue(cell - @columns, colour)
+        setSimilarValue(cell - @columns + 1, colour)  
+        setSimilarValue(cell - 1, colour)               
+	setSimilarValue(cell - @columns - 1, colour)
+      else
+        setSimilarValue(cell + 1, colour)               
+	setSimilarValue(cell - 1, colour)               
+	setSimilarValue(cell + @columns, colour)        
+	setSimilarValue(cell - @columns, colour)        
+	setSimilarValue(cell + @columns + 1, colour)        
+	setSimilarValue(cell + @columns - 1, colour)        
+        setSimilarValue(cell - @columns + 1, colour)        
+	setSimilarValue(cell - @columns - 1, colour)
+      end   
+    end
+  end
 
   def init
+    # TODO: add console input 	   
   end
 
   private def pixel(row, column)
@@ -111,5 +191,17 @@ class Matrix
   end
 
   def to_s(*matrix)
+    matrix ||= @matrix	  
+    columns_index = 0
+    elements = ""
+    @matrix.each do |i|
+      elements += i
+      columns_index += 1	 
+      if columns_index == @columns       
+         puts elements
+         elements = ""
+         columns_index = 0
+      end
+    end 
   end
 end
