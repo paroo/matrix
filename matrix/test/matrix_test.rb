@@ -96,16 +96,15 @@ class MatrixTest < Minitest::Test
       @matrix.draw_orizzontal_line(5, 8, 10, 0)
     end
 
-
+    # test print_area() method
     @matrix.reset
     @matrix.draw_vertical_line(VERTICAL_LINE_COLUMN, VERTICAL_LINE_START, 
 			       VERTICAL_LINE_END, "Z")
-
     vertical_line_indexes = [] 
     @matrix_array.each_with_index do |value, index|
       vertical_line_indexes << index if value == "Z"  
     end
- 
+
     @matrix.paint_area(3, 2, "P")   
 
     painted_area_indexes = [] 
