@@ -11,9 +11,10 @@ class Matrix
     @default_value = "O"
     @row_start = *(0..((@rows - 1) * @columns)).step(@columns).to_a
     @row_end =  *((@columns - 1)..((@rows) * @columns)).step(@columns).to_a
-    @first_row = *(0..(@columns - 1)).to_a
+    @first_row = *(1..(@columns - 2)).to_a
     @last_row = (((@rows - 1) * @columns)...@dimension).to_a
     @cell_value = nil
+    @visited = []
     @is_test = is_test
     reset
   end
@@ -95,9 +96,10 @@ class Matrix
     raise_wrong_column(column)    
     raise_is_not_a_string(colour)
 
-    @visited = []
     pixel = pixel(row, column - 1)
     setSimilarValue(pixel, colour)
+    @cell_value = nil
+    @visited = []
   end
 
   # recursively set the colour of the next pixel
@@ -106,71 +108,17 @@ class Matrix
     @cell_value = @matrix[cell] if @cell_value.nil?
     value = @matrix[cell]
 
-    if !cell.nil? && !@visited.include?(cell) && 
-       value == @cell_value && cell >= 0 and cell < @dimension
+    if !cell.nil? && !@visited.include?(cell) && value == @cell_value && cell >= 0 and cell < @dimension
       @visited << cell
       @matrix[cell] = colour 
-      # TODO: refactor the following if statements
       if @row_start.include?(cell)
         if cell == 0
           setSimilarValue(cell + 1, colour)               
 	  setSimilarValue(cell + @columns, colour)
           setSimilarValue(cell + @columns + 1, colour)  
-	elsif cell == 15	
+	elsif @row_start.last	
           setSimilarValue(cell + 1, colour)               
-	  setSimilarValue(cell - @columns, colour)
-          setSimilarValue(cell - @columns + 1, colour)  
-	else
-	  setSimilarValue(cell + 1, colour)               
-	  setSimilarValue(cell - @columns, colour)      
-          setSimilarValue(cell + @columns, colour)       
-          setSimilarValue(cell + @columns + 1, colour) 
-          setSimilarValue(cell - @columns + 1, colour)  
-        end			     
-      elsif @row_end.include?(cell)
-        if cell == 4
-          setSimilarValue(cell - 1, colour)               
-	  setSimilarValue(cell + @columns, colour)
-          setSimilarValue(cell + @columns + 1, colour)  
-	elsif cell == 15	
-          setSimilarValue(cell - 1, colour)               
-	  setSimilarValue(cell - @columns, colour)
-          selectSimilarValue(cell - @columns + 1, colour) 
-	else
-	  setSimilarValue(cell + 1, colour)               
-	  setSimilarValue(cell - @columns, colour)      
-          setSimilarValue(cell + @columns, colour)       
-          setSimilarValue(cell + @columns + 1, colour)
-	  setSimilarValue(cell - @columns + 1, colour)  
-        end
-      elsif @first_row.include?(cell) 
-        setSimilarValue(cell + 1, colour)               
-	setSimilarValue(cell + @columns, colour)
-        setSimilarValue(cell + @columns + 1, colour) 
-        setSimilarValue(cell - 1, colour)               
-	setSimilarValue(cell + @columns + 1, colour)     
-      elsif @last_row.include?(cell) 
-        setSimilarValue(cell + 1, colour)               
-	setSimilarValue(cell - @columns, colour)
-        setSimilarValue(cell - @columns + 1, colour)  
-        setSimilarValue(cell - 1, colour)               
-	setSimilarValue(cell - @columns - 1, colour)
-      else
-        setSimilarValue(cell + 1, colour)               
-	setSimilarValue(cell - 1, colour)               
-	setSimilarValue(cell + @columns, colour)        
-	setSimilarValue(cell - @columns, colour)        
-	setSimilarValue(cell + @columns + 1, colour)        
-	setSimilarValue(cell + @columns - 1, colour)        
-        setSimilarValue(cell - @columns + 1, colour)        
-	setSimilarValue(cell - @columns - 1, colour)
-      end   
-    end
-  end
-
-  private def pixel(row, column)
-    ((row - 1) * @columns) + column
-  end
+	  setSimilarValue(cell -Id
 
   private def raise_wrong_row(*rows) 
     if rows.any?{|value| value > @rows}
