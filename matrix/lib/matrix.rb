@@ -1,9 +1,9 @@
 #!/usr/bin/env ruby
 
 class Matrix
-  attr_accessor :matrix, :default_value, :rows, :columns
+  attr_accessor :matrix, :default_value, :rows, :columns, :is_test
 
-  def initialize(rows, columns) 
+  def initialize(rows, columns, is_test = false) 
     @rows = rows	  
     @columns = columns
     @matrix = []
@@ -14,6 +14,7 @@ class Matrix
     @first_row = *(0..(@columns - 1)).to_a
     @last_row = (((@rows - 1) * @columns)...@dimension).to_a
     @cell_value = nil
+    @is_test = is_test
     reset
   end
 
@@ -28,8 +29,8 @@ class Matrix
     while index <= @dimension - 1
       @matrix << value
       index += 1
-    end 
-  end 
+    end
+  end  
 
   # set value in a specific pixel
   def set_color_to_pixel(row, column, colour)
@@ -185,17 +186,21 @@ class Matrix
   
   private def raise_is_not_a_string(value)
     if value.nil? || !value.is_a?(String)
-      capture_exception("The value is nil or is not a string") 
+      raise "The value is nil or is not a string" 
     end
   end
 
   # utility method to capture exceptions
   private def capture_exception(exception)
-    begin
+    if @is_test
       raise exception
-    rescue => detail
-      puts detail
-    end	      
+    else
+      begin
+        raise exception
+      rescue => detail
+        puts detail
+      end
+    end      
   end
 
   def self.exctract_arguments(values)
@@ -233,7 +238,7 @@ class Matrix
     return Regexp.new(arguments)
   end
 
-  def self.init
+  def self.start
     is_matrix_created = false
     create_bitmap_usage = <<-eos
       Usage: I [number] [number] -- program that simulates a basic interactive 
@@ -244,21 +249,20 @@ class Matrix
             number(second)  rapresent the number of column in the bitmap
     
     eos
-
     interective_bitmap_usage = <<-eos
-       Usage : 
-           C           - Clears the table, setting all pixels to white (O).
-           L X Y C     - Colours the pixel (X,Y) with colour C.
-           V X Y1 Y2 C - Draw a vertical segment of colour C in column X betwee
-                         rows Y1 and Y2 (inclusive).
-           H X1 X2 Y C - Draw a horizontal segment of colour C in row Y between
-                         columns X1 and X2 (inclusive).
-           F X Y C     - Fill the region R with the colour C. R is defined as: 
-                         Pixel (X,Y) belongs to R. Any other pixel which is the
-                         same colour as (X,Y) and shares a common side with any
-                         pixel in R also belongs to this region.
-           S           - Show the contents of the current image
-           X           - Terminate the session
+      Usage : 
+          C           - Clears the table, setting all pixels to white (O).
+          L X Y C     - Colours the pixel (X,Y) with colour C.
+          V X Y1 Y2 C - Draw a vertical segment of colour C in column X betwee
+                        rows Y1 and Y2 (inclusive).
+          H X1 X2 Y C - Draw a horizontal segment of colour C in row Y between
+                        columns X1 and X2 (inclusive).
+          F X Y C     - Fill the region R with the colour C. R is defined as: 
+                        Pixel (X,Y) belongs to R. Any other pixel which is the
+                        same colour as (X,Y) and shares a common side with any
+                        pixel in R also belongs to this region.
+          S           - Show the contents of the current image
+          X           - Terminate the session
     eos
         
     puts create_bitmap_usage
@@ -270,7 +274,6 @@ class Matrix
        if command == "X"
          return
        end	       
-        
        if !is_matrix_created
          rows = values[1].to_i
          columns = values[2].to_i
@@ -304,7 +307,7 @@ class Matrix
              @new_matrix.paint_area(*arguments)
            when create_regex("S")
              @new_matrix.to_s    
-          else  
+           else  
              puts "The command #{values.join(" ")} is not valid please " + 
                   "select the following options"
 	     puts interective_bitmap_usage   
@@ -327,6 +330,12 @@ class Matrix
       end
     end 
   end
-  self
-end.init
+  
+  def self.is_test?
+    /test.rb/.match(caller.last) != nil
+  end
 
+  if !is_test?
+    Matrix.start
+  end 
+end

@@ -13,7 +13,7 @@ class MatrixTest < Minitest::Test
   ORIZZANTAL_LINE_ROW = 8
 
   def setup
-    @matrix = Matrix.new(10, 10)
+    @matrix = Matrix.new(10, 10, true)
     @matrix_array = @matrix.matrix
     @default_value = @matrix.default_value  
   end
@@ -27,7 +27,7 @@ class MatrixTest < Minitest::Test
     @matrix.reset(RESET_VALUE)
     assert(@matrix_array.all?{|value| value == RESET_VALUE},
 	   "The reset method did not reset all the elements")
-    assert_raises do  
+    assert_raises RuntimeError do  
       @matrix.reset(1)
     end
 
@@ -53,47 +53,48 @@ class MatrixTest < Minitest::Test
     actual_vertical_line_indexes =  (VERTICAL_LINE_START..VERTICAL_LINE_END).to_a.map{|x| ((x - 1) * @matrix.columns) + (VERTICAL_LINE_COLUMN - 1) }
     assert_equal(vertical_line_indexes, actual_vertical_line_indexes)  
 
-    assert_raises do  
+    assert_raises RuntimeError do  
       @matrix.draw_vertical_line(11, 5, 10, "Z")
     end
-    assert_raises do  
+
+    assert_raises RuntimeError  do  
       @matrix.draw_vertical_line(10, 5, 11, "Z")
     end
-    assert_raises do  
+    assert_raises RuntimeError  do  
       @matrix.draw_vertical_line(10, 11, 10, "Z")
     end
-    assert_raises do  
+    assert_raises RuntimeError  do  
       @matrix.draw_vertical_line(5, 5, 10, 0)
     end
 
     # test draw_orizzontal_line() method
-    @matrix.draw_orizzontal_line(ORIZZANTAL_LINE_START, ORIZZANTAL_LINE_END, ORIZZANTAL_LINE_ROW, "W")
-    orizzantal_line_indexes = [] 
+    @matrix.draw_horizontal_line(ORIZZANTAL_LINE_START, ORIZZANTAL_LINE_END, ORIZZANTAL_LINE_ROW, "W")
+    horizontal_line_indexes = [] 
     @matrix_array.each_with_index do |value, index|
-      orizzantal_line_indexes << index if value == "W"  
+      horizontal_line_indexes << index if value == "W"  
     end
-    actual_orizzantal_line_indexes =  (ORIZZANTAL_LINE_START..ORIZZANTAL_LINE_END).to_a.map{|x| (x - 1) + ((ORIZZANTAL_LINE_ROW - 1) * @matrix.columns) }
-    assert_equal(orizzantal_line_indexes, actual_orizzantal_line_indexes)  
+    actual_horizontal_line_indexes =  (ORIZZANTAL_LINE_START..ORIZZANTAL_LINE_END).to_a.map{|x| (x - 1) + ((ORIZZANTAL_LINE_ROW - 1) * @matrix.columns) }
+    assert_equal(horizontal_line_indexes, actual_horizontal_line_indexes)  
 
-    @matrix.draw_orizzontal_line(ORIZZANTAL_LINE_END, ORIZZANTAL_LINE_START, ORIZZANTAL_LINE_ROW, "K")
-    orizzantal_line_indexes = [] 
+    @matrix.draw_horizontal_line(ORIZZANTAL_LINE_END, ORIZZANTAL_LINE_START, ORIZZANTAL_LINE_ROW, "K")
+    horizontal_line_indexes = [] 
     @matrix_array.each_with_index do |value, index|
-      orizzantal_line_indexes << index if value == "K"  
+      horizontal_line_indexes << index if value == "K"  
     end
-    actual_orizzantal_line_indexes =  (ORIZZANTAL_LINE_START..ORIZZANTAL_LINE_END).to_a.map{|x| (x - 1) + ((ORIZZANTAL_LINE_ROW - 1) * @matrix.columns) }
-    assert_equal(orizzantal_line_indexes, actual_orizzantal_line_indexes)  
+    actual_horizontal_line_indexes =  (ORIZZANTAL_LINE_START..ORIZZANTAL_LINE_END).to_a.map{|x| (x - 1) + ((ORIZZANTAL_LINE_ROW - 1) * @matrix.columns) }
+    assert_equal(horizontal_line_indexes, actual_horizontal_line_indexes)  
 
-    assert_raises do  
-      @matrix.draw_orizzontal_line(11, 5, 2, "Z")
+    assert_raises RuntimeError  do  
+      @matrix.draw_horizontal_line(11, 5, 2, "Z")
     end
-    assert_raises do  
-      @matrix.draw_orizzontal_line(5, 11, 2, "Z")
+    assert_raises RuntimeError  do  
+      @matrix.draw_horizontal_line(5, 11, 2, "Z")
     end
-    assert_raises do  
-      @matrix.draw_orizzontal_line(5, 8, 11, 0)
+    assert_raises RuntimeError  do  
+      @matrix.draw_horizontal_line(5, 8, 11, 0)
     end
-    assert_raises do  
-      @matrix.draw_orizzontal_line(5, 8, 10, 0)
+    assert_raises RuntimeError  do  
+      @matrix.draw_horizontal_line(5, 8, 10, 0)
     end
 
     # test print_area() method
@@ -113,14 +114,8 @@ class MatrixTest < Minitest::Test
     end
     assert_equal(vertical_line_indexes, painted_area_indexes)  
 
-    assert_raises do  
+    assert_raises RuntimeError  do  
       @matrix.paint_area(11, 5,"Z")
-    end
-    assert_raises do  
-      @matrix.draw_orizzontal_line(5, 11, "Z")
-    end
-    assert_raises do  
-      @matrix.draw_orizzontal_line(5, 8, 0)
     end
   end
 end
