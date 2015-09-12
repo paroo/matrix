@@ -29,33 +29,33 @@ Please enter one of the following options :
 * S - Show the contents of the current image
 * X - Terminate the session
 
-> I
+ > I
 
 Please enter the number of rows:
 
-> 100
+ > 100
 
 Please enter the number of columns:
 
-> 100
+ > 100
 
 If there is any error display the error and ask the used to enter the value again.
 
 Please select the number of rows:
 
-> A
+ > A
 
 The row must be a number, Please enter the number of rows:
 
-> 100
+ > 100
 
 I will modify the I option::
 
-> I  
+ > I  
 
 Please enter bitmap name :
 
-> test_bitmap_1
+ > test_bitmap_1
 
 ...
 
