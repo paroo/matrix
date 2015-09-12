@@ -19,6 +19,7 @@ Ruby 2.0 program that simulates a basic interactive bitmap editor solving the [e
 * I will make the console more user friendly by proactively asking the user to enter a input rather than enter a function with all its parameters. e.g. 
  
 Please enter one of the following options :
+
 * I  - Create a new image with all pixels coloured white (O).
 * C - Clears the table, setting all pixels to white (O).
 * L - Colours the pixel with colour C.
@@ -27,26 +28,39 @@ Please enter one of the following options :
 * F - Fill the region R with the colour C.
 * S - Show the contents of the current image
 * X - Terminate the session
+
 > I
+
 Please enter the number of rows:
+
 > 100
+
 Please enter the number of columns:
+
 > 100
 
 If there is any error display the error and ask the used to enter the value again.
 
 Please select the number of rows:
+
 > A
+
 The row must be a number, Please enter the number of rows:
+
 > 100
 
 I will modify the I option::
+
 > I  
+
 Please enter bitmap name :
+
 > test_bitmap_1
+
 ...
 
 I will also add one more options::
+
 * O   - Display options
 * D   - Save a specific bitmap in a given location.
 * SA - Show all bitmaps details (size, location and last modified)
