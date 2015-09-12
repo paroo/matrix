@@ -330,7 +330,7 @@ class Matrix
       end
     end 
   end
-  
+
   def self.is_test?
     /test.rb/.match(caller.last) != nil
   end
